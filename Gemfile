@@ -4,21 +4,21 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.7.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.2'
-# Use sqlite3 as the database for Active Record
-gem 'mysql2', '>= 0.4.4'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
+# Use mysql as the database for Active Record
+gem 'mysql2'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+# gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
 # Use ActiveStorage variant
-gem 'mini_magick', '~> 4.8'
-gem 'rmagick'
+# gem 'mini_magick', '~> 4.8'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -43,18 +43,25 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "mini_magick"
+gem 'rmagick'
+# Manage user
+# Load .env file
+gem 'dotenv-rails'
 
-# devise
-gem 'devise_token_auth'
+gem 'faraday'
+gem 'jwt'
+
+gem 'unicorn'
+gem 'capistrano', '3.11.0'
+gem 'capistrano-rails'
+gem 'capistrano-bundler'
+gem 'capistrano-rails-console'
+gem 'capistrano-rbenv'
+gem 'capistrano3-unicorn'
+gem 'carrierwave'
 
 #paginate
 gem 'kaminari'
-
 gem 'whenever', require: false
-
-# Load .env file
-gem 'dotenv-rails'
-gem 'faraday'
-gem 'jwt'
-gem 'carrierwave'
 gem 'rack-cors'

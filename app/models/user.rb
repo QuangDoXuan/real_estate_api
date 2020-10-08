@@ -1,11 +1,10 @@
-# frozen_string_literal: true
-
-class User < ActiveRecord::Base
-
-  extend Devise::Models
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
-  include DeviseTokenAuth::Concerns::User
+class User < ApplicationRecord
+  has_secure_password
+  # mount_uploader :avatar, AvatarUploader
+  validates :email, presence: true, uniqueness: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :username, presence: true, uniqueness: true
+  validates :password,
+              length: { minimum: 6 },
+              if: -> { new_record? || !password.nil? }
 end
