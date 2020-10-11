@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_035204) do
+ActiveRecord::Schema.define(version: 2020_10_11_131209) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_035204) do
     t.integer "uid"
     t.datetime "posted_at"
     t.integer "parsed"
+    t.string "parse_url", limit: 2000
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["pref_id"], name: "index_products_on_pref_id"
     t.index ["project_id"], name: "index_products_on_project_id"
