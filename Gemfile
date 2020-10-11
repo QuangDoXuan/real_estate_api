@@ -65,3 +65,4 @@ gem 'carrierwave'
 gem 'kaminari'
 gem 'whenever', require: false
 gem 'rack-cors'
+gem 'nokogiri'
