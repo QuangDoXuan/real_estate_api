@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_131209) do
+ActiveRecord::Schema.define(version: 2020_10_13_164252) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_131209) do
     t.string "code"
     t.string "slug"
     t.string "image"
+    t.string "slug_url", limit: 4000
     t.index ["project_category_id"], name: "index_projects_on_project_category_id"
   end
 
