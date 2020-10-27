@@ -10,11 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_13_164252) do
+ActiveRecord::Schema.define(version: 2020_10_27_141425) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
     t.integer "parent_category_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "phone"
+    t.string "web_site"
+    t.string "aniverse"
+    t.string "field"
+    t.string "fund"
+    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,6 +69,7 @@ ActiveRecord::Schema.define(version: 2020_10_13_164252) do
     t.datetime "posted_at"
     t.integer "parsed"
     t.string "parse_url", limit: 2000
+    t.string "short_description", limit: 1000
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["pref_id"], name: "index_products_on_pref_id"
     t.index ["project_id"], name: "index_products_on_project_id"
@@ -64,6 +78,14 @@ ActiveRecord::Schema.define(version: 2020_10_13_164252) do
 
   create_table "project_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
+  end
+
+  create_table "project_images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name"
+    t.bigint "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_images_on_project_id"
   end
 
   create_table "projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -76,12 +98,20 @@ ActiveRecord::Schema.define(version: 2020_10_13_164252) do
     t.string "scale"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "project_category_id"
     t.string "code"
     t.string "slug"
     t.string "image"
     t.string "slug_url", limit: 4000
-    t.index ["project_category_id"], name: "index_projects_on_project_category_id"
+    t.string "pricem2"
+    t.string "status"
+    t.string "release_at"
+    t.string "build_status"
+    t.string "price_range"
+    t.string "project_category_ids"
+    t.bigint "company_id"
+    t.string "total_area"
+    t.text "description"
+    t.index ["company_id"], name: "index_projects_on_company_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -97,5 +127,6 @@ ActiveRecord::Schema.define(version: 2020_10_13_164252) do
   add_foreign_key "products", "categories"
   add_foreign_key "products", "prefs"
   add_foreign_key "products", "projects"
-  add_foreign_key "projects", "project_categories"
+  add_foreign_key "project_images", "projects"
+  add_foreign_key "projects", "companies"
 end
