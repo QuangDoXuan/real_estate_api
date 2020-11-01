@@ -11,4 +11,5 @@ end
 every 6.hours do
   rake "crawler:parse_product_info"
   rake "crawler:parse_project_info"
+  rake "crawler:parse_project_detail"
 end

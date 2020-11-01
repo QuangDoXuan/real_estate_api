@@ -9,6 +9,7 @@ class BdsApi < BaseCrawler
     for i in 1..10 do
       url = "https://homedy.com/du-an-ha-noi/p#{i}"
       form_res = Faraday.get url
+      sleep(rand(1) + 1)
       doc = Nokogiri::HTML.parse(form_res.body, nil, "utf-8")
       doc.css(".tab-content .item").each do |item|
         project_ids = []
@@ -124,16 +125,18 @@ class BdsApi < BaseCrawler
       company = Company.find_or_create_by(
         name: doc.css('.iname').text.strip
       )
+      company.image = doc.css('.avatar img').first['src']
+      company.slug = doc.css('.investor a').first['href']
+      company.save
 
       project.address = doc.css('.ls-address').present? ? doc.css('.ls-address').text.strip : ""
       project.price_range = doc.css('.price .price-total span').present? ? doc.css('.price .price-total span').text.strip : ""
       project.pricem2 = doc.css('.price .price-unit span').present? ? doc.css('.price .price-unit span').text.strip : ""
-      project.image = doc.css('.avatar img').first['src']
       project.area = doc.css('.txt-text:contains("Diện tích khu đất:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Diện tích khu đất:")').first.parent.children.css('.txt-bule').first.text : ""
       project.status = doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').present? ? doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').text : ""
       project.description = doc.css('.description-content').present? ? doc.css('.description-content').to_s.gsub("\r","").gsub("\n","") : ""
       project.release_at = doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.text : ""
-
+      project.image = doc.css('.image-default img').first['src']
       doc.css('.category a').each do |category|
 
         pj_category = ProjectCategory.find_or_create_by(
