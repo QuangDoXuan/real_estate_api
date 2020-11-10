@@ -66,3 +66,6 @@ gem 'kaminari'
 gem 'whenever', require: false
 gem 'rack-cors'
 gem 'nokogiri'
+gem 'geocoder'
+gem 'geokit-rails'
+gem 'json'

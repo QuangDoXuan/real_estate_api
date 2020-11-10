@@ -11,4 +11,10 @@ class Project < ApplicationRecord
     joins(:company)
     .select('projects.*', 'companies.name as company_name', 'companies.slug as company_slug')
   }
+
+  scope :has_address, -> {
+    where('address IS NOT NULL')
+    .where('lon IS NULL')
+    .where('lat IS NULL')
+  }
 end

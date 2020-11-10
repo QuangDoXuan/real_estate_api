@@ -1,6 +1,7 @@
 require 'open-uri'
 
 class BdsApi < BaseCrawler
+  include Geokit::Geocoders
   def initialize()
     super(nil)
   end
@@ -96,6 +97,7 @@ class BdsApi < BaseCrawler
         )
       end
 
+      product.remote_thumbnail = doc.css(".item a").first['href']
       product.category_id = category.id
       product.project_id = project.id
       product.description = doc.css("#readmore").to_s.gsub("\n","").gsub("\r","")
@@ -136,7 +138,7 @@ class BdsApi < BaseCrawler
       project.status = doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').present? ? doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').text : ""
       project.description = doc.css('.description-content').present? ? doc.css('.description-content').to_s.gsub("\r","").gsub("\n","") : ""
       project.release_at = doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.text : ""
-      project.image = doc.css('.image-default img').first['src']
+      project.image = doc.css('.i-item a').first['href']
       doc.css('.category a').each do |category|
 
         pj_category = ProjectCategory.find_or_create_by(
@@ -156,4 +158,18 @@ class BdsApi < BaseCrawler
 
     end
   end
+
+  def parse_products_geocoding product, address
+    api_key = ENV['GOOGLE_API_KEY']
+    uri = URI.parse('https://maps.googleapis.com/maps/api/geocode/json')
+    params = { :address => address, :key => api_key }
+    uri.query = URI.encode_www_form( params )
+    res = uri.open.read
+
+    data_hash = JSON.parse(res)
+    product.lon = data_hash["results"].first["geometry"]["location"]["lng"].to_s
+    product.lat = data_hash["results"].first["geometry"]["location"]["lat"].to_s
+    product.save
+  end
+
 end
