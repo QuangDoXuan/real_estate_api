@@ -27,8 +27,8 @@ class Product < ApplicationRecord
 
   scope :geo_search, -> (north, south, east, west) {
     where(
-      :lat => south..north,
-      :lon => west...east,
+      :lon => south..north,
+      :lat => west...east,
     )
   }
 

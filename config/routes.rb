@@ -7,6 +7,10 @@ Rails.application.routes.draw do
   resources :categories, only: [:index, :create, :show, :update]
   resources :companies, only: [:index, :create, :show, :update]
 
+  namespace :admin do
+    resources :products
+  end
+
   get '/maps' => 'products#map', as: "map_product"
 
   post '/auth/login', to: 'authentication#login'
