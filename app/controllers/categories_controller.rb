@@ -3,7 +3,7 @@ class CategoriesController < ApplicationController
   def index
     page = params[:page] || 1
     per = params[:per] || 10
-    categories = Category.page(page).per(per)
+    categories = Category.has_parent.page(page).per(per)
     render json: categories, status: :ok
   end
 

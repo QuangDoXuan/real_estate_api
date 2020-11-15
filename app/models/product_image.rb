@@ -1,8 +1,9 @@
 class ProductImage < ApplicationRecord
   belongs_to :product
+  mount_uploader :image, ThumbnailUploader
 
   def self.createProductImage(img, product_id)
-    product_img = ProductImage.create(name: img[:image_name], product_id: product_id)
+    product_img = ProductImage.create(image: img, product_id: product_id)
     product_img
   end
   
@@ -12,10 +13,10 @@ class ProductImage < ApplicationRecord
       if img[:is_delete] == true
         product_img.delete
       elsif img[:is_change] == true
-        product_img.update(name: img[:image_name])
+        product_img.update(image: img)
       end
     else
-      ProductImage.create(name: img[:image_name], product_id: product_id)
+      ProductImage.create(image: img, product_id: product_id)
     end
   end
 end
