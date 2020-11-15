@@ -4,6 +4,8 @@ class ProductImage < ApplicationRecord
 
   def self.createProductImage(img, product_id)
     product_img = ProductImage.create(image: img, product_id: product_id)
+    product_img.name = ENV['URL'] + "/uploads/product_image/image/" + product_img.id.to_s + "/" + product_img.image.url.split("/")[-1]
+    product_img.save
     product_img
   end
   

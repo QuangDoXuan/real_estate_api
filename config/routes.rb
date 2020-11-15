@@ -9,6 +9,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :products
+    resources :categories
+    resources :companies
+    resources :projects
   end
 
   get '/maps' => 'products#map', as: "map_product"

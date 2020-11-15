@@ -14,7 +14,8 @@ class ProductsController < ApplicationController
     product = Product.find(params[:id])
     if product.present?
       product_images = product.product_images
-      response = {product: product, product_images: product_images}
+      project = product.project
+      response = {product: product, product_images: product_images, project: project}
       render json: response, status: :ok
     else
       response = {}
