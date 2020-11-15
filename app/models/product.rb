@@ -8,22 +8,21 @@ class Product < ApplicationRecord
   belongs_to :pref, optional: true
 
   attribute :category_name, :string
-
-
+  enum is_remote: {remote: 0, system: 1}
 
   scope :not_parsed, -> { where('parsed IS NULL OR parsed = ?', 0) }
 
   scope :for_hire, -> {
     joins(:category)
     .where('categories.parent_category_type = ?', 2)
-    .order('products.id asc')
+    .order('products.id desc')
     .select('products.*', 'categories.name as category_name')
   }
 
   scope :for_sell, -> {
     joins(:category)
     .where('categories.parent_category_type = ?', 1)
-    .order('products.id asc')
+    .order('products.id desc')
     .select('products.*', 'categories.name as category_name')
   }
 
@@ -46,7 +45,7 @@ class Product < ApplicationRecord
       short_code: params[:short_code].presence,
       description: params[:description].presence,
       price01: params[:price01].presence,
-      remote_thumbnail: params[:remote_thumbnail].presence,
+      # remote_thumbnail: params[:remote_thumbnail].presence,
       thumnail: params[:thumnail].presence,
       address: params[:address].presence,
       bed_rooms: params[:bed_rooms].presence,
@@ -63,8 +62,11 @@ class Product < ApplicationRecord
       parse_url: params[:parse_url].presence,
       short_description: params[:short_description].presence,
       lon: params[:lon].presence,
-      lat: params[:lat].presence
+      lat: params[:lat].presence,
+      is_remote: :system
     )
+    product.remote_thumbnail = ENV['URL'] + "/uploads/product/thumnail/" + product.id.to_s + "/" + product.thumnail.url.split("/")[-1]
+    product.save
     product
   end
 
@@ -94,6 +96,8 @@ class Product < ApplicationRecord
       lon: params[:lon].presence,
       lat: params[:lat].presence
     )
+    product.remote_thumbnail = ENV['URL'] + "/uploads/product/thumnail/" + product.id.to_s + "/" + product.thumnail.url.split("/")[-1]
+    product.save
     product
   end
 end

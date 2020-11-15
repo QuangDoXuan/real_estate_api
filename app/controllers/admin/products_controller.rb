@@ -25,7 +25,6 @@ class Admin::ProductsController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       product = Product.createProduct(params)
-      byebug
       params[:product_images].each do |img|
         ProductImage.createProductImage(img, product.id)
       end

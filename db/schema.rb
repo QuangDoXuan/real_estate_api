@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_14_085853) do
+ActiveRecord::Schema.define(version: 2020_11_15_123055) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_085853) do
     t.datetime "updated_at", null: false
     t.string "image"
     t.string "slug", limit: 1000
+    t.string "thumnail"
   end
 
   create_table "prefs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -75,6 +76,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_085853) do
     t.string "short_description", limit: 1000
     t.float "lon"
     t.float "lat"
+    t.integer "is_remote", default: 0
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["pref_id"], name: "index_products_on_pref_id"
     t.index ["project_id"], name: "index_products_on_project_id"
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_085853) do
     t.bigint "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
     t.index ["project_id"], name: "index_project_images_on_project_id"
   end
 
@@ -118,6 +121,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_085853) do
     t.text "description"
     t.float "lon"
     t.string "lat"
+    t.string "thumnail"
     t.index ["company_id"], name: "index_projects_on_company_id"
   end
 
