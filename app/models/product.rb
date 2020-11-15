@@ -1,9 +1,15 @@
 class Product < ApplicationRecord
+  has_many :product_images
+  mount_uploader :thumnail, ThumbnailUploader
+  accepts_nested_attributes_for :product_images, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
   belongs_to :category
   belongs_to :project, optional: true
   belongs_to :category, optional: true
   belongs_to :pref, optional: true
-  has_many :product_images
+
+  attribute :category_name, :string
+
+
 
   scope :not_parsed, -> { where('parsed IS NULL OR parsed = ?', 0) }
 
@@ -11,12 +17,14 @@ class Product < ApplicationRecord
     joins(:category)
     .where('categories.parent_category_type = ?', 2)
     .order('products.id asc')
+    .select('products.*', 'categories.name as category_name')
   }
 
   scope :for_sell, -> {
     joins(:category)
     .where('categories.parent_category_type = ?', 1)
     .order('products.id asc')
+    .select('products.*', 'categories.name as category_name')
   }
 
   scope :has_address, -> {
@@ -34,28 +42,28 @@ class Product < ApplicationRecord
 
   def self.createProduct(params)
     product = Product.create(
-      name: params[:product][:name].presence,
-      short_code: params[:product][:short_code].presence,
-      description: params[:product][:description].presence,
-      price01: params[:product][:price01].presence,
-      remote_thumbnail: params[:product][:remote_thumbnail].presence,
-      thumnail: params[:product][:thumnail].presence,
-      address: params[:product][:address].presence,
-      bed_rooms: params[:product][:bed_rooms].presence,
-      wc: params[:product][:wc].presence, 
-      area: params[:product][:area].presence,
-      front_area: params[:product][:front_area].presence,
-      floors: params[:product][:floors].presence,
-      category_id: params[:product][:category_id].presence,
-      project_id: params[:product][:project_id].presence,
-      pref_id: params[:product][:pref_id].presence,
-      uid: params[:product][:uid].presence,
-      posted_at: params[:product][:posted_at].presence,
-      parsed: params[:product][:parsed].presence,
-      parse_url: params[:product][:parse_url].presence,
-      short_description: params[:product][:short_description].presence,
-      lon: params[:product][:lon].presence,
-      lat: params[:product][:lat].presence
+      name: params[:name].presence,
+      short_code: params[:short_code].presence,
+      description: params[:description].presence,
+      price01: params[:price01].presence,
+      remote_thumbnail: params[:remote_thumbnail].presence,
+      thumnail: params[:thumnail].presence,
+      address: params[:address].presence,
+      bed_rooms: params[:bed_rooms].presence,
+      wc: params[:wc].presence, 
+      area: params[:area].presence,
+      front_area: params[:front_area].presence,
+      floors: params[:floors].presence,
+      category_id: params[:category_id].presence,
+      project_id: params[:project_id].presence,
+      pref_id: params[:pref_id].presence,
+      uid: params[:uid].presence,
+      posted_at: params[:posted_at].presence,
+      parsed: params[:parsed].presence,
+      parse_url: params[:parse_url].presence,
+      short_description: params[:short_description].presence,
+      lon: params[:lon].presence,
+      lat: params[:lat].presence
     )
     product
   end
@@ -63,28 +71,28 @@ class Product < ApplicationRecord
   def self.updateProduct(params)
     product = Product.find(params[:id])
     product.update(
-      name: params[:product][:name].presence,
-      short_code: params[:product][:short_code].presence,
-      description: params[:product][:description].presence,
-      price01: params[:product][:price01].presence,
-      remote_thumbnail: params[:product][:remote_thumbnail].presence,
-      thumnail: params[:product][:thumnail].presence,
-      address: params[:product][:address].presence,
-      bed_rooms: params[:product][:bed_rooms].presence,
-      wc: params[:product][:wc].presence, 
-      area: params[:product][:area].presence,
-      front_area: params[:product][:front_area].presence,
-      floors: params[:product][:floors].presence,
-      category_id: params[:product][:category_id].presence,
-      project_id: params[:product][:project_id].presence,
-      pref_id: params[:product][:pref_id].presence,
-      uid: params[:product][:uid].presence,
-      posted_at: params[:product][:posted_at].presence,
-      parsed: params[:product][:parsed].presence,
-      parse_url: params[:product][:parse_url].presence,
-      short_description: params[:product][:short_description].presence,
-      lon: params[:product][:lon].presence,
-      lat: params[:product][:lat].presence
+      name: params[:name].presence,
+      short_code: params[:short_code].presence,
+      description: params[:description].presence,
+      price01: params[:price01].presence,
+      remote_thumbnail: params[:remote_thumbnail].presence,
+      thumnail: params[:thumnail].presence,
+      address: params[:address].presence,
+      bed_rooms: params[:bed_rooms].presence,
+      wc: params[:wc].presence, 
+      area: params[:area].presence,
+      front_area: params[:front_area].presence,
+      floors: params[:floors].presence,
+      category_id: params[:category_id].presence,
+      project_id: params[:project_id].presence,
+      pref_id: params[:pref_id].presence,
+      uid: params[:uid].presence,
+      posted_at: params[:posted_at].presence,
+      parsed: params[:parsed].presence,
+      parse_url: params[:parse_url].presence,
+      short_description: params[:short_description].presence,
+      lon: params[:lon].presence,
+      lat: params[:lat].presence
     )
     product
   end
