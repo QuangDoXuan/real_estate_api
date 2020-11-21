@@ -34,4 +34,11 @@ class CategoriesController < ApplicationController
     response = {category: category}
     render json: response, status: :ok
   end
+  
+  def get_by_parent
+    categories = Category.where('parent_category_type = ?', params[:id])
+
+    render json: categories, status: :ok
+  end
+
 end

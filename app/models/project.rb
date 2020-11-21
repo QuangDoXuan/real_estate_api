@@ -11,6 +11,7 @@ class Project < ApplicationRecord
   }
   scope :with_company, -> {
     joins(:company)
+    .order('projects.id DESC')
     .select('projects.*', 'companies.name as company_name', 'companies.slug as company_slug')
   }
 

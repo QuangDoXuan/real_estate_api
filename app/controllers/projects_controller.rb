@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
   def show
     project = Project.find(params[:id])
     if project.present?
-      response = {project: project}
+      response = {project: project, project_images: project.project_images, company: project.company}
       render json: response, status: :ok
     end
   end
@@ -52,4 +52,13 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def get_all_product
+    id = params[:id]
+    page = params[:page] || 1
+    per = params[:per] || 20
+    project = Project.find(id)
+
+    products = project.products.page(page).per(per)
+    render json: products, status: :ok
+  end
 end

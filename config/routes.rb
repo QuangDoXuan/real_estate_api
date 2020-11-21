@@ -14,7 +14,11 @@ Rails.application.routes.draw do
     resources :projects
   end
 
+  get '/category/getbyparent/:id' => 'categories#get_by_parent', as: "category_by_parent"
   get '/maps' => 'products#map', as: "map_product"
+  get '/filter' => 'products#filter', as: "filter_product"
+  get '/getbyproject/:id' => 'projects#get_all_product', as: "get_by_project"
+  get '/getbycompany/:id' => 'companies#get_all_projects', as: "get_by_company"
 
   post '/auth/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'

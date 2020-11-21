@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_15_123055) do
+ActiveRecord::Schema.define(version: 2020_11_18_161343) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(version: 2020_11_15_123055) do
     t.float "lon"
     t.float "lat"
     t.integer "is_remote", default: 0
+    t.bigint "price02"
+    t.integer "area02"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["pref_id"], name: "index_products_on_pref_id"
     t.index ["project_id"], name: "index_products_on_project_id"

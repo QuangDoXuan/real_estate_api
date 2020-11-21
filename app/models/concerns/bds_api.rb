@@ -77,12 +77,16 @@ class BdsApi < BaseCrawler
       url = "https://homedy.com/" + product.parse_url
       form_res = Faraday.get url
       doc = Nokogiri::HTML.parse(form_res.body, nil, "utf-8")
-      category = Category.find_or_create_by(
-        name: doc.css('.breadcrumb li')[2].text.strip,
-      )
+
       if doc.css('.type-name').text.strip == "Bán"
+        category = Category.find_or_create_by(
+          name: "Bán" + doc.css('.breadcrumb li')[2].text.strip,
+        )
         category.parent_category_type = 1
       elsif doc.css('.type-name').text.strip == "Cho thuê"
+        category = Category.find_or_create_by(
+          name: "Cho thuê" + doc.css('.breadcrumb li')[2].text.strip,
+        )
         category.parent_category_type = 2
       end
       category.save
@@ -112,17 +116,7 @@ class BdsApi < BaseCrawler
     form_res = Faraday.get url
     doc = Nokogiri::HTML.parse(form_res.body, nil, "utf-8")
     project_categories = []
-    # bye
-    # docbug.css('.ls-address').text.strip
-    # doc.css('.price .price-total span').text.strip
-    # doc.css('.price .price-unit span').text.strip
-    # doc.css('.avatar img').first['src']
-    # company-name : doc.css('.iname').text.strip
-    # doc.css('.txt-text:contains("Diện tích khu đất:")').first.parent.children.css('.txt-bule').first.text
-    # doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').text
-    # doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.text
-    # doc.css('.description-content').to_s.gsub("\r","").gsub("\n","")
-    # doc.css('.image-default').first['style'].gsub("background: url(","").gsub(")","")
+
     if doc.css('.iname').present?
       company = Company.find_or_create_by(
         name: doc.css('.iname').text.strip
@@ -139,6 +133,9 @@ class BdsApi < BaseCrawler
       project.description = doc.css('.description-content').present? ? doc.css('.description-content').to_s.gsub("\r","").gsub("\n","") : ""
       project.release_at = doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.text : ""
       project.image = doc.css('.i-item a').first['href']
+      if company.present?
+        project.company_id = company.id
+      end
       doc.css('.category a').each do |category|
 
         pj_category = ProjectCategory.find_or_create_by(

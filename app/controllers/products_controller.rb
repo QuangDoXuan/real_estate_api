@@ -34,4 +34,22 @@ class ProductsController < ApplicationController
     render json: @products, status: :ok
   end
 
+  def filter
+    from_price = params[:from_price] || 0
+    to_price = params[:to_price] || 1000000000000
+    from_area = params[:from_area] || 0
+    to_area = params[:to_area] || 1000000
+    address = params[:address] ||''
+    parent_category = params[:parent_category]
+    page = params[:page] || 1
+    per = params[:per] || 20
+    category_id = params[:category_id]
+
+    if parent_category == "1" 
+      @response = Product.search(from_price, to_price, from_area, to_area, address).for_sell.page(page).per(per)
+    else 
+      @response = Product.search(from_price, to_price, from_area, to_area, address).for_hire.page(page).per(per)
+    end
+    render json: @response, status: :ok
+  end
 end

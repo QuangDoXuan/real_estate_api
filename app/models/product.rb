@@ -39,6 +39,13 @@ class Product < ApplicationRecord
     )
   }
 
+  scope :search, -> (from_price, to_price, from_area, to_area, address) {
+    where('address like ?', "%#{address}%")
+    .where(:price02 => from_price..to_price)
+    .where(:area02 => from_area..to_area)
+    .order('products.id DESC')
+  }
+
   def self.createProduct(params)
     product = Product.create(
       name: params[:name].presence,

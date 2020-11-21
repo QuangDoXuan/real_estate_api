@@ -19,4 +19,31 @@ class BdsProductService
       )
     end
   end
+
+  def self.convertPrice(product)
+    if product.price01.present? 
+      if product.category.parent_category_type == 1
+        if product.price01.include? "Tỷ"
+          product.price02 = product.price01.gsub("Tỷ", '').to_i * 1000000000
+
+        elsif product.price01.include? "Triệu"
+          product.price02 = product.price01.gsub("Triệu", '').to_i * 1000000
+        end
+        product.save
+      else
+        if product.price01.include? "Triệu/tháng"
+          product.price02 = product.price01.gsub("Triệu/tháng",'').to_i * 1000000
+        end
+        product.save
+      end
+    end
+  end
+
+  def self.convertArea product
+    if product.area.present?
+      product.area02 = product.area.gsub("m2",'').to_i
+      product.save
+    end
+  end
+
 end

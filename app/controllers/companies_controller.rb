@@ -34,4 +34,14 @@ class CompaniesController < ApplicationController
     response = {company: company}
     render json: response, status: :ok
   end
+
+  def get_all_projects
+    company = Company.find(params[:id])
+    if company.present?
+      projects = company.projects
+      render json: projects, status: :ok
+    else
+      render json: [], status: :ok
+    end
+  end
 end
