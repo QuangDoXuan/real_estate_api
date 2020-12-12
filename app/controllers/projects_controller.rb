@@ -61,4 +61,12 @@ class ProjectsController < ApplicationController
     products = project.products.page(page).per(per)
     render json: products, status: :ok
   end
+
+  def get_by_name
+    name = params[:name]
+    projects = Project.search_by_name(name)
+
+    render json: projects, status: :ok
+  end
+
 end

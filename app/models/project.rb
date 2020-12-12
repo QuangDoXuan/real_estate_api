@@ -4,6 +4,10 @@ class Project < ApplicationRecord
   belongs_to :company, optional: true
   attribute :company_name, :string
   attribute :company_slug, :string
+  attribute :company_image, :string
+  attribute :company_field, :string
+  attribute :company_fund, :string
+  attribute :company_aniverse, :string
   mount_uploader :thumnail, ThumbnailUploader
 
   scope :not_parsed, -> {
@@ -12,13 +16,17 @@ class Project < ApplicationRecord
   scope :with_company, -> {
     joins(:company)
     .order('projects.id DESC')
-    .select('projects.*', 'companies.name as company_name', 'companies.slug as company_slug')
+    .select('projects.*', 'companies.name as company_name', 'companies.slug as company_slug','companies.image as company_image', 'companies.fund as company_fund', 'companies.field as company_field', 'companies.aniverse as company_aniverse')
   }
 
   scope :has_address, -> {
     where('address IS NOT NULL')
     .where('lon IS NULL')
     .where('lat IS NULL')
+  }
+
+  scope :search_by_name, -> (name) {
+    where('name like ?', "%#{name}%")
   }
 
   def self.createProject(params)

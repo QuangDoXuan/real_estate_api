@@ -54,4 +54,13 @@ class Admin::ProjectsController < ApplicationController
     end
   end
 
+  def get_by_name
+    page = params[:page] || 1
+    per = params[:per] || 10
+    name = params[:name]
+    projects = Project.search_by_name(name).page(page).per(per)
+
+    render json: projects, status: :ok
+  end
+
 end
