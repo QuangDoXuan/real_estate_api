@@ -64,7 +64,7 @@ class ProjectsController < ApplicationController
 
   def get_by_name
     name = params[:name]
-    projects = Project.search_by_name(name)
+    projects = Project.with_company.search_by_name(name).page(1).per(5)
 
     render json: projects, status: :ok
   end

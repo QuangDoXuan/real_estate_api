@@ -18,7 +18,7 @@ class Admin::ProductsController < ApplicationController
 
   def show
     @product = Product.find(params[:id])
-    render json: @products, status: :ok
+    render json: @product, status: :ok
   end
 
 
@@ -71,6 +71,15 @@ class Admin::ProductsController < ApplicationController
       response = {delete_status: 'complete'}
       render json: response, status: :ok
     end
+  end
+
+  def get_by_name
+    page = params[:page] || 1
+    per = params[:per] || 5
+    name = params[:name]
+    projects = Product.search_by_name(name).page(page).per(per)
+
+    render json: projects, status: :ok
   end
 
   private

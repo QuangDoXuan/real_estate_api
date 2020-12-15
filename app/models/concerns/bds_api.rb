@@ -112,7 +112,8 @@ class BdsApi < BaseCrawler
 
   def parse_project_info project
     slug = project.name.mb_chars.normalize(:kd).gsub('đ', 'd').gsub(/[^\x00-\x7F]/n,'').downcase.to_s.gsub(" ", "-")
-    url = "https://homedy.com/#{slug}-#{project.code}"
+    url = "https://homedy.com#{project.slug}"
+
     form_res = Faraday.get url
     doc = Nokogiri::HTML.parse(form_res.body, nil, "utf-8")
     project_categories = []
@@ -132,6 +133,7 @@ class BdsApi < BaseCrawler
       project.status = doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').present? ? doc.css('label:contains("Trạng thái:")').first.parent.children.css('a').text : ""
       project.description = doc.css('.description-content').present? ? doc.css('.description-content').to_s.gsub("\r","").gsub("\n","") : ""
       project.release_at = doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Thời gian hoàn thành:")').first.parent.children.css('.txt-bule').first.text : ""
+      project.scale = doc.css('.txt-text:contains("Mật độ xây dựng:")').first.present? && doc.css('.txt-text:contains("Mật độ xây dựng:")').first.parent.children.css('.txt-bule').first.present? ? doc.css('.txt-text:contains("Mật độ xây dựng:")').first.parent.children.css('.txt-bule').first.text : ""
       project.image = doc.css('.i-item a').first['href']
       if company.present?
         project.company_id = company.id
@@ -146,9 +148,9 @@ class BdsApi < BaseCrawler
       project.project_category_ids = project_categories.to_s
       project.save
 
-      doc.css('.i-item img').each do |pj_image|
+      doc.css('.i-item a').each do |pj_image|
         pj_image = ProjectImage.find_or_create_by(
-          name: pj_image['src'],
+          name: pj_image['href'],
           project_id: project.id
         )
       end
@@ -167,6 +169,22 @@ class BdsApi < BaseCrawler
     product.lon = data_hash["results"].first["geometry"]["location"]["lng"].to_s
     product.lat = data_hash["results"].first["geometry"]["location"]["lat"].to_s
     product.save
+  end
+
+  def parse_company_info company
+    url = "https://homedy.com#{company.slug}"
+    form_res = Faraday.get url
+    doc = Nokogiri::HTML.parse(form_res.body, nil, "utf-8")
+  
+    company.address = doc.css('.text-label:contains("Địa chỉ:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Địa chỉ:")').first.parent.children.css('.text-right').first.text : ""
+    company.web_site = doc.css('.text-label:contains("Website:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Website:")').first.parent.children.css('.text-right').first.text : ""
+    company.fund = doc.css('.text-label:contains("Vốn điều lệ:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Vốn điều lệ:")').first.parent.children.css('.text-right').first.text : ""
+    company.phone = doc.css('.text-label:contains("Số điện thoại:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Số điện thoại:")').first.parent.children.css('.text-right').first.text : ""
+    company.field = doc.css('.text-label:contains("Lĩnh vực:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Lĩnh vực:")').first.parent.children.css('.text-right').first.text : ""
+    company.aniverse = doc.css('.text-label:contains("Thành lập:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Thành lập:")').first.parent.children.css('.text-right').first.text : ""
+    company.description = doc.css('.text-label:contains("Giới thiệu:")').first.parent.children.css('.text-right').first.present? ? doc.css('.text-label:contains("Giới thiệu:")').first.parent.children.css('.text-right').first.text : ""
+
+    company.save
   end
 
 end

@@ -32,7 +32,7 @@ namespace :crawler do
   task parse_product_info: :environment do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:parse_product_info")
     
-    Product.all.find_each do |product|
+    Product.where('products.parsed IS NULL').find_each do |product|
       begin
         bds_api = BdsApi.new
         bds_api.parse_product_info product
@@ -62,7 +62,7 @@ namespace :crawler do
   task parse_project_detail: :environment do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:parse_project_detail")
 
-    Project.all.find_each do |project|
+    Project.where('projects.description IS NULL').find_each do |project|
       begin
           bds_api = BdsApi.new
           bds_api.parse_project_info project
@@ -75,10 +75,26 @@ namespace :crawler do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Finish crawler:parse_project_detail")
   end
 
+  task parse_company_detail: :environment do
+    Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:parse_company_detail")
+
+    Company.all.find_each do |company|
+      begin
+          bds_api = BdsApi.new
+          bds_api.parse_company_info company
+        rescue => e
+          Rails.logger.error("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Error in crawler:parse_company_detail")
+          Rails.logger.error(e)  
+      end
+    end
+
+    Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Finish crawler:parse_project_detail")
+  end
+
   task parse_products_geocoding: :environment do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:parse_products_geocoding")
     
-    Product.has_address.last(200).each do |product|
+    Product.has_address.each do |product|
       begin
         bds_api = BdsApi.new
         bds_api.parse_products_geocoding product, product.address
@@ -108,7 +124,7 @@ namespace :crawler do
   task convert_products_price: :environment do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:convert_products_price")
 
-    Product.all.each do |product|
+    Product.where('products.price02 IS NULL').find_each do |product|
       begin
         BdsProductService.convertPrice(product)
       rescue
@@ -122,7 +138,7 @@ namespace :crawler do
   task convert_products_area: :environment do
     Rails.logger.info("#{Time.zone.now.strftime("%Y-%m-%d %H:%M:%S")} Start crawler:convert_products_area")
 
-    Product.all.each do |product|
+    Product.where('area02 IS NULL').find_each do |product|
       begin
         BdsProductService.convertArea product
       rescue

@@ -39,6 +39,10 @@ class Product < ApplicationRecord
     )
   }
 
+  scope :search_by_name, -> (name) {
+    where('products.name like ?', "%#{name}%")
+  }
+
   scope :search, -> (from_price, to_price, from_area, to_area, address) {
     where('address like ?', "%#{address}%")
     .where(:price02 => from_price..to_price)

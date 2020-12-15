@@ -26,7 +26,7 @@ class Project < ApplicationRecord
   }
 
   scope :search_by_name, -> (name) {
-    where('name like ?', "%#{name}%")
+    where('projects.name like ?', "%#{name}%")
   }
 
   def self.createProject(params)

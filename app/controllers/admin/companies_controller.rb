@@ -42,4 +42,14 @@ class Admin::CompaniesController < ApplicationController
     render json: response, status: :ok
   end
 
+  def get_by_name
+    page = params[:page] || 1
+    per = params[:per] || 5
+    name = params[:name]
+    projects = Company.search_by_name(name).page(page).per(per)
+
+    render json: projects, status: :ok
+  end
+
+
 end

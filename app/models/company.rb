@@ -2,6 +2,10 @@ class Company < ApplicationRecord
   has_many :projects
   mount_uploader :thumnail, ThumbnailUploader
   
+  scope :search_by_name, -> (name) {
+    where('companies.name like ?', "%#{name}%")
+  }
+
   def self.createCompany(params)
     company = Company.create(
       name: params[:name].presence,

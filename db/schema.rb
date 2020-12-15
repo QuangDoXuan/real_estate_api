@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_18_161343) do
+ActiveRecord::Schema.define(version: 2020_12_15_152928) do
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
@@ -33,6 +33,19 @@ ActiveRecord::Schema.define(version: 2020_11_18_161343) do
     t.string "image"
     t.string "slug", limit: 1000
     t.string "thumnail"
+  end
+
+  create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name", limit: 1000
+    t.text "title"
+    t.string "short_code"
+    t.text "description"
+    t.string "thumnail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "content"
+    t.integer "is_hot", default: 0
+    t.integer "is_present", default: 0
   end
 
   create_table "prefs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

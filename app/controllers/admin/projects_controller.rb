@@ -56,7 +56,7 @@ class Admin::ProjectsController < ApplicationController
 
   def get_by_name
     page = params[:page] || 1
-    per = params[:per] || 10
+    per = params[:per] || 100
     name = params[:name]
     projects = Project.search_by_name(name).page(page).per(per)
 
